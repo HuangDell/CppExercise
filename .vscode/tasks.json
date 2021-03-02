@@ -1,0 +1,26 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: g++.exe build active file",
+            "command": "D:\\MinGW\\bin\\g++.exe",//这是g++所在位置
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\Execution\\${fileBasenameNoExtension}.exe"//这是目标文件产生目录（根据自身情况修改）
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        }
+    ],
+    "version": "2.0.0"
+}
