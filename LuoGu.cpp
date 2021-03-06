@@ -1,34 +1,25 @@
-#include <iostream>
-#include <cmath>
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<cmath>
+#include<cstring>
 using namespace std;
-int getSecond(const int num[],int size)
-{
-    int temp[size/2];
-    if(size==2)
-    return num[0]<num[1]?num[0]:num[1];
-    for(int i=0;i<size;i+=2)
-        temp[i/2]=num[i]>num[i+1]?num[i]:num[i+1];
-    return getSecond(temp,size/2);
-
+struct node{
+	int l,r;
+}a[1001000];//记录每个节点的左右节点
+int Max=-1,n;
+void dfs(int root,int step){
+	if(root==0) return;//如果该节点为0（即上它的爸爸没有这个儿子），返回
+	Max=max(Max,step);//记录最大值
+	dfs(a[root].l,step+1);//搜索它的左儿子
+	dfs(a[root].r,step+1);//搜索它的右儿子
 }
-int main(void)
-{
-    int exp;
-    cin >> exp;
-    int index=(int)pow(2,exp);
-    int num[index];
-    for (int i=0;i<index;i++)
-    {
-        cin >> num[i];
-    }
-    int second=getSecond(num,index);
-    for (int i=0;i<index;i++)
-    {
-        if(num[i]==second)
-        {
-            cout<< i+1;
-            break;
-        }
-    }
-
+int main(){
+	cin>>n;//输入n
+	for(int i=1;i<=n;i++){
+		cin>>a[i].l>>a[i].r;//输入该节点的左节点和右节点
+	}
+	dfs(1,1);//从1号节点，深度为1开始搜索 
+	cout<<Max;//输出最大值
+	return 0;
 }
