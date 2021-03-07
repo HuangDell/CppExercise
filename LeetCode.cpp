@@ -1,27 +1,41 @@
 #include <vector>
 #include <iostream>
+#include <cstring>
 using namespace std;
-class Solution {
+class Solution
+{
 public:
-    bool binSearch(int num[],int index,int target)
+    vector<int> an;
+    void getList(vector<vector <int>>& ve,vector<int>&num,int floors,int *hash)
     {
-        if(target<num[index/2])
-        binSearch(num,index/2,target);
-        else if(target>num[index/2])
-        binSearch(num+index/2,index/2,target);
-        else if(target==num[index/2])
-        return true;
-        else return false;
+        if(floors==num.size()+1)
+        {
+            ve.push_back(an);
+            return ;
+        }
+        int size=num.size();
+        for (int i=0;i<size;i++)
+        {
+            if(hash[i]==0)
+            {
+                hash[i]=1;
+                an.push_back(num[i]);
+                getList(ve,num,floors+1,hash);
+                hash[i]=0;
+                an.pop_back();
+            }
+        }
     }
-    bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        int num[matrix.size()*matrix[0].size()];
-        int index=0;
-        for (int i=0;i<matrix.size();i++)
-            for (int j=0;j<matrix[0].size();j++)
-                num[index++]=matrix[i][j];
-        return binSearch(num,index,target);
+    vector<vector<int>> permute(vector<int>& nums) {
+        int hash[nums.size()];
+        memset(hash,0,sizeof(int)*nums.size());
+        vector<vector<int>> ve;
+        getList(ve,nums,1,hash);
+        return ve;
+        
     }
 };
+
 int main(void)
 {
     vector <int> nums{1,2,1};
