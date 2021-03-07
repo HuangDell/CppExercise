@@ -3,29 +3,27 @@
 using namespace std;
 class Solution {
 public:
-    vector<int> nextGreaterElements(vector<int>& nums) {
-        int size =nums.size();
-        vector<int> ve;
-        for (int i=0;i<size;i++)
-        {
-            int max=-1;
-            for(int j=(i+1)%size;j!=i;j=(j+1)%size)
-            {
-                if(nums[j]>nums[i])
-                {
-                    max=nums[j];
-                    break;
-                }
-            }
-            ve.push_back(max);
-        }
-        return ve;
+    bool binSearch(int num[],int index,int target)
+    {
+        if(target<num[index/2])
+        binSearch(num,index/2,target);
+        else if(target>num[index/2])
+        binSearch(num+index/2,index/2,target);
+        else if(target==num[index/2])
+        return true;
+        else return false;
+    }
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int num[matrix.size()*matrix[0].size()];
+        int index=0;
+        for (int i=0;i<matrix.size();i++)
+            for (int j=0;j<matrix[0].size();j++)
+                num[index++]=matrix[i][j];
+        return binSearch(num,index,target);
     }
 };
 int main(void)
 {
     vector <int> nums{1,2,1};
     Solution s=Solution();
-    for (auto num :s.nextGreaterElements(nums))
-    cout << num;
 }
