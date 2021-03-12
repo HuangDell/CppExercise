@@ -11,7 +11,7 @@ class CreateUser{
     
     bool createNew()
     {
-        os.open("../data/account.whf", ostream::out | ostream::app);
+        os.open("../data/account.whm", ostream::out | ostream::app);
         string userName, userPassword;
         char ch;
         cout << "Please create a account to use the software" << endl;
@@ -48,7 +48,7 @@ class CreateUser{
     public:
     CreateUser()
     {
-        is.open("../data/account.whf",ifstream::in);
+        is.open("../data/account.whm",ifstream::in);
         if (is >> USER_NAME >> USER_PASSWORD>>amountWare)
             hasCount = true;
     }
