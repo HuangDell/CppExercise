@@ -2,6 +2,8 @@
 #include <conio.h>
 class CreateUser{
     private:
+    ofstream os;
+    ifstream is;
     string USER_NAME;
     string USER_PASSWORD;
     bool hasCount=false;
@@ -44,8 +46,6 @@ class CreateUser{
     }
 
     public:
-    ofstream os;
-    ifstream is;
     CreateUser()
     {
         is.open("../data/account.whf",ifstream::in);

@@ -45,7 +45,7 @@ class WareHouse{
                 ware_detail+=(temp+"\n");
             }
         }
-        os.open("../data/accont.whf",ofstream::out);
+        os.open("../data/WareHouse.whf",ofstream::out);
         os<< ware_detail;
         os.close();
         house.erase(house.begin()+index-1);
@@ -71,9 +71,10 @@ class WareHouse{
         string temp;
         istringstream in;
         Ware ware;
-        is.open("../bin/WareHouse.whm",ifstream::in);
+        is.open("../data/WareHouse.whm",ifstream::in);
         while(getline(is,temp))
         {
+            cout << temp;
             in=istringstream(temp);
             ware=Ware();
             in >>ware.getName()>>ware.getCount();
@@ -105,4 +106,4 @@ class WareHouse{
             else if(input =="C")
                 modeC();
     }
-};
+};;
