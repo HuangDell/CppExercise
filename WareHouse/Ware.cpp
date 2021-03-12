@@ -3,7 +3,6 @@ class Ware{
     private:
     string name;
     int count=0;
-    int index=0;
     public:
     inline string& getName()
     {
@@ -13,11 +12,7 @@ class Ware{
     {
         return count;
     }
-    inline int& getIndex()
-    {
-        return index;
-    }
-    Ware(string name,int count,int index):name(name),count(count),index(index){}
+    Ware(string name,int count):name(name),count(count){}
     Ware()=default;
     
 };
