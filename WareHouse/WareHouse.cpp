@@ -9,22 +9,19 @@ private:
     const string BLACK = " ";
     const string TAB = "\t\t";
     vector<Ware> house;
-    ofstream os;
-    ifstream is;
 
     void modeA()
     {
         string name;
-        int count;
+        int account;
         cout << "Please input the ware's name: ";
         cin >> name;
         cout << endl
              << "Please input the ware's amounts: ";
-        while (!(cin >> count))
-        {
+        while (!(cin >> account))
             cout << "Please try again";
-        }
-        addWare(name, count);
+        Ware ware(name, account);
+        house.push_back(ware);
         cout << "Add a new ware sucessfully!" << endl;
         system("pause");
     }
@@ -32,24 +29,9 @@ private:
     void modeB()
     {
         int index;
-        string ware_detail;
-        string temp;
-        is.open("../data/WareHouse.whm", ifstream::in);
         cout << "Please input the ware's index that you what to delete:";
         while (!(cin >> index) || index - 1 > house.size())
             cout << "Please try again:";
-        while (getline(is, temp))
-        {
-            string name;
-            istringstream is_string(temp);
-            is_string >> name;
-            if (name != house[index - 1].getName())
-                ware_detail += (temp + "\n");
-        }
-        is.close();
-        os.open("../data/WareHouse.whm", ofstream::out);
-        os << ware_detail;
-        os.close();
         house.erase(house.begin() + index - 1);
     }
 
@@ -57,11 +39,12 @@ private:
     {
         int index;
         string choose;
-        cout << "Please input the ware's index that you what to delete:";
+        cout << "Please input the ware's index that you what to change:";
         while (!(cin >> index))
             cout << "Please try again:";
         cout << house[index - 1].getName() << BLACK << house[index - 1].getCount() << BLACK << endl;
         cout << "A)Change the ware's name" << TAB << "B)Change the ware's amount";
+        cin >> choose;
         while (true)
         {
             if (choose == "A")
@@ -70,6 +53,7 @@ private:
                 cout << "Please input the new name";
                 cin >> name;
                 house[index - 1].getName() = name;
+                break;
             }
             else if (choose == "B")
             {
@@ -77,28 +61,24 @@ private:
                 cout << "Please input the new amount";
                 cin >> amount;
                 house[index - 1].getCount() = amount;
+                break;
             }
             else
                 cout << "Please try again:";
         }
     }
 
-    void addWare(string name, int count)
+    void modeD()
     {
-        os.open("../data/WareHouse.whm", ofstream::out | ofstream::app);
-        Ware ware(name, count);
-        house.push_back(ware);
-        os << ware.getName() << BLACK << ware.getCount() << BLACK << endl;
-        os.close();
-    }
 
+    }
 public:
     WareHouse()
     {
         string temp;
+        ifstream is("../data/WareHouse.whm", ifstream::in);
         istringstream in;
         Ware ware;
-        is.open("../data/WareHouse.whm", ifstream::in);
         while (getline(is, temp))
         {
             in = istringstream(temp);
@@ -132,5 +112,13 @@ public:
             modeB();
         else if (input == "C")
             modeC();
+    }
+
+    void saveData()
+    {
+        ofstream os("../data/WareHouse.whm",ofstream::out);
+        for (Ware ware : house)
+            os << ware.getName() << BLACK << ware.getCount() << BLACK << endl;
+        os.close();
     }
 };

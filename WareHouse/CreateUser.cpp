@@ -20,6 +20,8 @@ class CreateUser{
         cout << "Please input the password: ";
         while ((ch = _getch()) != '\r')
         {
+            if (ch == '\b')
+                cout << '\b'<<'\b';
             userPassword += ch;
             cout << "*";
         }
@@ -36,6 +38,9 @@ class CreateUser{
         string password;
         while ((ch = _getch()) != '\r')
         {
+            if (ch == '\b')
+                cout << '\b'<<' '<<'\b'<<' '<<'\b';
+            else
             password += ch;
             cout << "*";
         }
