@@ -4,6 +4,7 @@ class Ware{
     string name;
     int count=0;
     string date;
+    double price;
     public:
     inline string& getName()
     {
@@ -17,7 +18,10 @@ class Ware{
     {
         return date;
     }
-    Ware(string name,int count,string date):name(name),count(count),date(date){}
+    inline double& getPrice()
+    {
+        return price;
+    }
+    Ware(string name,int count,int price,string date):name(name),count(count),price(price),date(date){}
     Ware()=default;
-    
 };
