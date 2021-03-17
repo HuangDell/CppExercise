@@ -1,6 +1,12 @@
+/************************************************* 
+Copyright:HuangDell 
+Author: HuangDell
+Date:2021/3/19
+Description:Simple ware house control 
+**************************************************/   
 #include "Header.h"
 #include <conio.h>
-class CreateUser{
+class CreateUser{//创建用户
     private:
     ofstream os;
     ifstream is;
@@ -9,7 +15,7 @@ class CreateUser{
     bool hasCount=false;
     int amountWare = 0;
     
-    bool createNew()
+    bool createNew()//不存在就创建新的用户
     {
         os.open("../data/account.whm", ostream::out | ostream::app);
         string userName, userPassword;
@@ -30,7 +36,7 @@ class CreateUser{
            << amountWare << endl;
         return true;
     }
-    bool loadUser()
+    bool loadUser()//载入用户数据
     {
         cout << "Your account name:" << USER_NAME << endl
              << "Please input your password: ";
@@ -51,14 +57,14 @@ class CreateUser{
     }
 
     public:
-    CreateUser()
+    CreateUser()//将用户数据载入到内存中
     {
         is.open("../data/account.whm",ifstream::in);
         if (is >> USER_NAME >> USER_PASSWORD>>amountWare)
             hasCount = true;
     }
 
-    bool login()
+    bool login()//登录
     {
         system("cls");
         if (hasCount == false)
