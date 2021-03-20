@@ -3,21 +3,31 @@ using namespace std;
 class Solution {
 public:
     /**
-     * @param n: non-negative integer, n posts
-     * @param k: non-negative integer, k colors
-     * @return: an integer, the total number of ways
+     * @param x: the wall's height
+     * @return: YES or NO
      */
-    int numWays(int n, int k) {
-        // write your code here
-        if (n==1)
-            return k;
-        return numWays(n-1,k)*(k-1)+numWays(n-1,k);
+    string isBuild(int x) {
+        bool dp[x+1]={false};
+        if(x>=3 && x<7)
+        {
+            dp[3] = true;
+            for (int i=4;i<=x;i++)
+            dp[i]=dp[i-3];
+        }
+        if(x>=7)
+        {
+            dp[7] = true;
+            for (int i=8;i<=x;i++)
+            dp[i]=dp[i-3] || dp[i-7];
+        }
+
+        return (dp[x]==true ?"Yes":"No");
     }
 };
 int main(void)
 {
     Solution s;
-    cout <<s.numWays(3,2);
+    cout << s.isBuild(4);
     
 
 }
