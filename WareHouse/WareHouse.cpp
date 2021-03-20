@@ -92,12 +92,12 @@ private:
             cin >> amount;
             if(amount <0 || amount > house[index].getCount())
             {
-                printf("\t\tNumber Invalid!");
+                printf("\t\tNumber Invalid!\n");
                 goto Again;
             }
             house[index].getCount()-=amount;
-            printf("\t\tSell successfuly!");
-            Sleep(1000);
+            printf("\t\tSell successfuly! You get %.2f$!",amount*house[index].getPrice());
+            Sleep(2000);
         }
         else
         {
@@ -120,7 +120,7 @@ private:
         {
             printWare(index);
             cout << "\t\tA)Change the name" << TAB << "B)Change the amount\n";
-            printf("\t\tC)Change the price");
+            printf("\t\tC)Change the price\n");
             printf("\t\t");
             cin >> choose;
             while (true)
@@ -130,7 +130,7 @@ private:
                     string name;
                     cout << "\t\tPlease input the new name:";
                     cin >> name;
-                    house[index - 1].getName() = name;
+                    house[index].getName() = name;
                     printf("\t\tChange the ware's name successfully!");
                     Sleep(1000);
                     break;
@@ -140,7 +140,7 @@ private:
                     int amount;
                     cout << "\t\tPlease input the new amount:";
                     cin >> amount;
-                    house[index - 1].getCount() = amount;
+                    house[index].getCount() = amount;
                     printf("\t\tChange the ware's amount successfully!");
                     Sleep(1000);
                     break;
@@ -148,9 +148,9 @@ private:
                 else if (choose == "C")
                 {
                     int price;
-                    printf("\t\tPlease input the new price");
-                    scanf("%d", price);
-                    house[index - 1].getPrice() = price;
+                    printf("\t\tPlease input the new price:");
+                    cin >> price;
+                    house[index].getPrice() = price;
                     printf("\t\tChange the ware's price successfully!");
                     Sleep(1000);
                     break;
