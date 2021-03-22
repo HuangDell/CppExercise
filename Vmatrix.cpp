@@ -1,52 +1,95 @@
 #include <iostream>
+#include <cmath>
+#include <vector>
+#include <stack>
+#include <cctype>
 using namespace std;
-char *convertDecimalToHex(int);
-void convertDecimalToHex(int,char*);
+string *values;
+int index;
+class elem{
+    public:
+    char name;
+    int val;
+    elem(char name):name(name),val(0){};
+};
+bool elemIsin(const vector<elem>& ve,char name)
+{
+    for (auto v:ve)
+        if(v.name==name)
+            return true;
+    return false;
+}
+int findVal(const vector<elem> &ve,char name)
+{
+    for (auto v:ve)
+        if(v.name==name)
+        return v.val;
+}
+bool judge(string prop, vector<elem>& ve,int i)
+{
+    stack <int> st;
+    int size=ve.size();
+    for (int j=0;j<size;j++)
+        ve[j].val=values[i][j]-'0';
+    for(auto ch:prop)
+    {
+        if(isalpha(ch))
+        st.push(findVal(ve,ch));
+        else if(ch=='~')
+            st.top()=!st.top();
+        else if(ch=='*')
+        {
+            int temp=st.top();
+            st.pop();
+            st.top()=st.top() && temp;
+        }
+        else if (ch=='+')
+        {
+            int temp=st.top();
+            st.pop();
+            st.top()=st.top() || temp;
+        }
+    }
+    return st.top();
+}
+void generatedValue(string &temp,int val,int size)
+{
+    temp+=to_string(val);
+    if (temp.size() == size)
+    {
+        values[index++]=temp;
+        return;
+    }
+    generatedValue(temp,0, size);
+    temp.pop_back();
+    generatedValue(temp,1,size);
+    temp.pop_back();
+}
 int main(void)
 {
-    int num,sum=0;
-    char *s;
-    std::cin>> num;
-    cout<< convertDecimalToHex(num);
-    convertDecimalToHex(num,s);
-    cout<< s<<endl;
-}
-void convertDecimalToHex(int value, char *s)
-{
-    s=convertDecimalToHex(value);
-}
-char * convertDecimalToHex(int value)
-{
-    int mod=0,index=48;
-    char hex[50]={0};
-    while(value)
+    int count;
+    cin >>count;
+    for (int i=0;i<count;i++)
     {
-        mod=value%16;
-        switch (mod)
+        string prop,temp;
+        bool isTrue=true;
+        index=0;
+        vector <elem> elements;
+        cin >> prop;
+        for (auto ch:prop)
+        if(isalpha(ch) &&!elemIsin(elements,ch))
+        elements.push_back(elem(ch));
+        int way=pow(2,elements.size());
+        values=new string [way];
+        generatedValue(temp,0,elements.size());
+        temp.clear();
+        generatedValue(temp,1,elements.size());
+        for (int i=0;i<index;i++)
         {
-            case 10:
-            hex[index]='a';
-            break;
-            case 11:
-            hex[index]='b';
-            case 12:
-            hex[index]='c';
-            break;
-            case 13:
-            hex[index]='d';
-            break;
-            case 14:
-            hex[index]='e';
-            break;
-            case 15:
-            hex[index]='f';
-            break;
-            default:
-            hex[index]='0'+mod;
+            isTrue=isTrue && judge(prop,elements,i);
+            if(!isTrue)
             break;
         }
-        value/=16;
-        index--;
+        cout << prop +":"<<(isTrue ?"Yes":"No")<<endl;
     }
-    return hex+index+1;
 }
