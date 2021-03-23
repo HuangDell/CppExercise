@@ -1,29 +1,35 @@
 #include <iostream>
-#include <string.h>
+#include <vector>
+
 using namespace std;
 class Solution {
 public:
-    string removeDuplicates(string S) {
-        auto head=S.begin();
-        auto end=S.end();
-        while(head!=end-1 && head!=end)
+    void dfs(string s ,vector<string> &dict,bool & is)
+    {
+        int size=s.size();
+        if(size==0)
+            is=true;
+        for(int i=1;i<=size;i++)
         {
-            if(*head==*(head+1))
-            {
-                S.erase(head);
-                S.erase(head);
-                return removeDuplicates(S);
-            }
-            else 
-            head++;
+            string sub = s.substr(0, i);
+            for (auto temp : dict)
+                if (sub == temp)
+                    dfs(s.substr(i),dict,is);
+            if(is==true)
+                return ;
         }
-        return S;
+    }
+    bool wordBreak(string s, vector<string> &wordDict)
+    {
+        bool is=false;
+        dfs(s,wordDict,is);
+        return is;
     }
 };
 
 int main(void)
 {
     Solution s=Solution();
-    cout << s.removeDuplicates("aaaaaaaa");
-
+    vector<string> dict{"apple", "pen"};
+    cout <<s.wordBreak("applepenapple",dict);
 }
