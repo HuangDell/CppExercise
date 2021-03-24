@@ -1,32 +1,30 @@
 #include <iostream>
+#include <cstring>
 #include <vector>
 
 using namespace std;
 class Solution {
-public:
-    void dfs(string s ,vector<string> &dict,bool & is)
+    bool isInDict(string s,const vector<string> &dict)
     {
-        int size=s.size();
-        if(size==0)
-            is=true;
-        for(int i=1;i<=size;i++)
-        {
-            string sub = s.substr(0, i);
-            for (auto temp : dict)
-                if (sub == temp)
-                    dfs(s.substr(i),dict,is);
-            if(is==true)
-                return ;
-        }
+        for (auto temp:dict)
+            if(s==temp)
+            return true;
+        return false;
     }
+public:
+
     bool wordBreak(string s, vector<string> &wordDict)
     {
-        bool is=false;
-        dfs(s,wordDict,is);
-        return is;
+        int size=s.size();
+        bool dp[size+1];
+        memset(dp,false,sizeof(bool)*(size+1));
+        dp[0]=true;
+        for(int i=1;i<=size;i++)
+            for (int j=0;j<i && !dp[i];j++)
+                dp[i] = dp[j] && isInDict(s.substr(j, i - j), wordDict);
+        return dp[size];
     }
 };
-
 int main(void)
 {
     Solution s=Solution();
