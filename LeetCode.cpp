@@ -4,30 +4,44 @@
 
 using namespace std;
 class Solution {
-    bool isInDict(string s,const vector<string> &dict)
-    {
-        for (auto temp:dict)
-            if(s==temp)
-            return true;
-        return false;
-    }
 public:
-
-    bool wordBreak(string s, vector<string> &wordDict)
+    void findIsland(vector<vector<char>>& grid,int i,int j)
     {
-        int size=s.size();
-        bool dp[size+1];
-        memset(dp,false,sizeof(bool)*(size+1));
-        dp[0]=true;
-        for(int i=1;i<=size;i++)
-            for (int j=0;j<i && !dp[i];j++)
-                dp[i] = dp[j] && isInDict(s.substr(j, i - j), wordDict);
-        return dp[size];
+        if(grid[i][j]=='1')
+        grid[i][j]='0';
+        else
+        return;
+        if(j+1<grid[0].size())
+        findIsland(grid,i,j+1);
+        if(i+1<grid.size())
+        findIsland(grid,i+1,j);
+    }
+    int numIslands(vector<vector<char>>& grid) {
+        int row=grid.size();
+        int col=grid[0].size();
+        int count=0;
+
+        for (int i=0;i<row;i++)
+            for (int j=0;j<col;j++)
+                if(grid[i][j]=='1')
+                {
+                    count++;
+                    findIsland(grid,i,j);
+                }
+        return count;
     }
 };
 int main(void)
 {
+
     Solution s=Solution();
-    vector<string> dict{"apple", "pen"};
-    cout <<s.wordBreak("applepenapple",dict);
+    vector <vector<char>> grid;
+    grid.push_back(vector<char>{'1','1','1','1','0'});
+    grid.push_back(vector<char>{'1','1','0','1','0'});
+    grid.push_back(vector<char>{'1','1','0','0','0'});
+    grid.push_back(vector<char>{'0','0','0','0','0'});
+
+
+
+    cout<<s.numIslands(grid);
 }
