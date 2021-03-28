@@ -1,47 +1,52 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <list>
 
 using namespace std;
 class Solution {
 public:
-    void findIsland(vector<vector<char>>& grid,int i,int j)
-    {
-        if(grid[i][j]=='1')
-        grid[i][j]='0';
-        else
-        return;
-        if(j+1<grid[0].size())
-        findIsland(grid,i,j+1);
-        if(i+1<grid.size())
-        findIsland(grid,i+1,j);
-    }
-    int numIslands(vector<vector<char>>& grid) {
-        int row=grid.size();
-        int col=grid[0].size();
-        int count=0;
-
-        for (int i=0;i<row;i++)
-            for (int j=0;j<col;j++)
-                if(grid[i][j]=='1')
+    int trap(vector<int>& height) {
+        int an=0;
+        list <int>lis{0};
+        bool check=false;
+        for (auto num :height)
+        {
+            if(!check)
+            {
+                if (num > lis.back())
+                    check = true;
+                lis.push_back(num);
+            }
+            else
+            {
+                if (num <= lis.back())
                 {
-                    count++;
-                    findIsland(grid,i,j);
+                    int more=0,size=lis.size();
+                    auto head=lis.cbegin();
+                    auto tale=lis.cend();
+                    head++;
+                    tale--;
+                    while(head!=tale)
+                    {
+                        more+=*head;
+                        head++;
+                    }
+                    an+=(lis.front()>lis.back()?lis.back():lis.front())*(size-2)-more;
+                    check=false;
+                    for (int i=0;i<size-1;i++)
+                        lis.pop_front();
                 }
-        return count;
+                    lis.push_back(num);
+            }
+        }
+        return an;
     }
 };
 int main(void)
 {
 
     Solution s=Solution();
-    vector <vector<char>> grid;
-    grid.push_back(vector<char>{'1','1','1','1','0'});
-    grid.push_back(vector<char>{'1','1','0','1','0'});
-    grid.push_back(vector<char>{'1','1','0','0','0'});
-    grid.push_back(vector<char>{'0','0','0','0','0'});
-
-
-
-    cout<<s.numIslands(grid);
+    vector<int> ve={4,2,0,3,2,5};
+    cout<<s.trap(ve);
 }
