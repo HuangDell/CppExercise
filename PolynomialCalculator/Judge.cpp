@@ -14,7 +14,7 @@ class Judge
     public:
     Judge()
     {
-        poly_name="";
+        poly_name="None";
         str_reg=regex("((\\w+)=)?(\\(-?\\d+,-?\\d+\\))+");//用于判断输入的多项式是否合法
         str_draw=regex(R"~((-?\d+),(-?\d+))~");//提取多项式的系数和指数
         str_name=regex("(\\w+)=.*");//提取多项式名称

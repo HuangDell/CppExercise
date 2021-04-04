@@ -3,20 +3,23 @@
 #include <vector>
 #include "Judge.cpp"
 #include "Polynomial.cpp"
+#include "Menu.cpp"
 using namespace std;
 int main(void)//main函数启动程序，实现交互。
 {
-    string input,choose;
-    vector<double> poly;
-    Judge judge;
+    string choose;
     while(true)
     {
-        cin>>input;
-        poly = judge.polynomial(input);
-        if(!poly.empty())
+        start:
+        system("cls");
+        printMenu();
+        cin>>choose;
+        if(!isLegal(choose))
+            goto start;
+        switch(stoi(choose))
         {
-            Polynomial polynomial(poly,judge.getName());
-            cout << polynomial.to_string();
+            case 1:Mode1();
+            break;
         }
     }
 }
