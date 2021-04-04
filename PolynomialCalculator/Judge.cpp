@@ -15,12 +15,12 @@ class Judge
     Judge()
     {
         poly_name="";
-        str_reg=regex("((\\w+)=)?(\\(-?\\d+,-?\\d+\\))+");
-        str_draw=regex(R"~((-?\d+),(-?\d+))~");
-        str_name=regex("(\\w+)=");
+        str_reg=regex("((\\w+)=)?(\\(-?\\d+,-?\\d+\\))+");//用于判断输入的多项式是否合法
+        str_draw=regex(R"~((-?\d+),(-?\d+))~");//提取多项式的系数和指数
+        str_name=regex("(\\w+)=.*");//提取多项式名称
     }
 
-    vector<double> polynomial(string input)//此函数用于判断输入的多项式是否valid
+    vector<double> polynomial(string input)//此函数用于解析输入的多项式，并将结果以vector形式返回。
     {
         vector<double> poly;
         if(regex_match(input,matchResult,str_reg) && matchResult[0].length()==input.size())

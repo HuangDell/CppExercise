@@ -19,6 +19,5 @@ int main(void)//main函数启动程序，实现交互。
             cout << polynomial.to_string();
         }
     }
-
 }
 
