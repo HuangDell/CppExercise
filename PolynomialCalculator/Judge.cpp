@@ -42,5 +42,9 @@ class Judge
     {
         return poly_name;
     }
+    void clear()
+    {
+        poly_name="None";
+    }
 
 };

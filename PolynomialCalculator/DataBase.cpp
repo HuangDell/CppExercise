@@ -10,15 +10,8 @@ class DataBase{
         data.push_back(py);
     }
 
-    void showData()
+    vector<Polynomial>& getData()
     {
-        int count=1;
-        for (auto temp:data)
-        {
-            printf("%s=%s\t\t",temp.getName(),temp.to_string());
-            if(count%2==0)
-                puts("");
-            count++;
-        }
+        return data;
     }
 };

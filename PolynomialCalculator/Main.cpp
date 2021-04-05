@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 #include "Judge.cpp"
-#include "Polynomial.cpp"
 #include "Menu.cpp"
 using namespace std;
 int main(void)//main函数启动程序，实现交互。
@@ -21,6 +20,10 @@ int main(void)//main函数启动程序，实现交互。
         {
             case 1:menu.Mode1();
             break;
+            case 2:menu.Mode2();
+            break;
+            default:
+            goto start;
         }
     }
 }
