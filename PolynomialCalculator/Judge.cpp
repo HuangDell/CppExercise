@@ -25,7 +25,7 @@ class Judge
         vector<double> poly;
         if(regex_match(input,matchResult,str_reg) && matchResult[0].length()==input.size())
         {
-            sregex_iterator iter(input.begin(), input.end(), str_draw);
+            sregex_iterator iter(input.begin(), input.end(), str_draw);//使用迭代器获取多项式的系数和指数
             sregex_iterator end;
             while(iter!=end)
             {
@@ -33,7 +33,7 @@ class Judge
                     poly.push_back(stod((*iter)[i]));
                     iter++;
             }
-            if(regex_match(input,matchResult,str_name))
+            if(regex_match(input,matchResult,str_name))//正则表达式提取多项式名称
                 poly_name=matchResult[1];
         }
         return poly;

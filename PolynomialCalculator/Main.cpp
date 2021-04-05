@@ -8,17 +8,18 @@ using namespace std;
 int main(void)//main函数启动程序，实现交互。
 {
     string choose;
+    Menu menu;
     while(true)
     {
         start:
         system("cls");
-        printMenu();
+        menu.printMenu();
         cin>>choose;
-        if(!isLegal(choose))
+        if(!menu.isLegal(choose))
             goto start;
         switch(stoi(choose))
         {
-            case 1:Mode1();
+            case 1:menu.Mode1();
             break;
         }
     }

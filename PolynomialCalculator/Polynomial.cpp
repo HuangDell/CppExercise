@@ -74,4 +74,12 @@ public:
         }
         return str_poly;
     }
+    string &getName()
+    {
+        return name;
+    }
+    vector<double> &getPoly()
+    {
+        return poly;
+    }
 };
