@@ -45,6 +45,7 @@ private:
         string name;
         int account,price;
         SYSTEMTIME time;
+        string ws;
         cout << "\t\tPlease input the ware's name: ";
         cin >> name;
         int index=findWare(name);
@@ -52,10 +53,18 @@ private:
         {
             cout << "\t\tPlease input the ware's amounts: ";
             while (!(cin >> account))
+            {
                 cout << "\t\tPlease try again:";
+                cin.clear();
+                fflush(stdin);
+            }
             cout << "\t\tPlease input the ware's price: ";
             while (!(cin >> price))
-                cout << "\t\tPlease try again";
+            {
+                cout << "\t\tPlease try again:";
+                cin.clear();
+                fflush(stdin);
+            }
             GetLocalTime(&time);
             string temp = to_string(time.wMinute);
             //设置入库时间
@@ -89,7 +98,12 @@ private:
             printWare(index);
             Again:
             printf("\t\tPlease input the amount of sell:");
-            cin >> amount;
+            while (!(cin >> amount))
+            {
+                cout << "\t\tPlease try again:";
+                cin.clear();
+                fflush(stdin);
+            }
             if(amount <0 || amount > house[index].getCount())
             {
                 printf("\t\tNumber Invalid!\n");
@@ -103,6 +117,7 @@ private:
         {
             printf("\t\tSorry can't find the \"%s\"",name.c_str());
             Sleep(2000);
+            return;
         }
         if(house[index].getCount()==0)
         house.erase(house.begin()+index);//货物数量为0时从仓库中移除
@@ -139,7 +154,12 @@ private:
                 {
                     int amount;
                     cout << "\t\tPlease input the new amount:";
-                    cin >> amount;
+                    while (!(cin >> amount))
+                    {
+                        cout << "\t\tPlease try again:";
+                        cin.clear();
+                        fflush(stdin);
+                    }
                     house[index].getCount() = amount;
                     printf("\t\tChange the ware's amount successfully!");
                     Sleep(1000);
@@ -149,14 +169,23 @@ private:
                 {
                     int price;
                     printf("\t\tPlease input the new price:");
-                    cin >> price;
+                    while (!(cin >> price))
+                    {
+                        cout << "\t\tPlease try again:";
+                        cin.clear();
+                        fflush(stdin);
+                    }
                     house[index].getPrice() = price;
                     printf("\t\tChange the ware's price successfully!");
                     Sleep(1000);
                     break;
                 }
                 else
+                {
                     cout << "\t\tPlease try again:";
+                    cin>> choose;
+                }
+
             }
         }
         else
@@ -188,6 +217,10 @@ private:
             printf("\t\tPress anything to exit\n\t\t");
             _getch();
         }
+    }
+    void modeQ()
+    {
+        exit(0);
     }
 public:
     WareHouse()//构造函数，用于读取数据库中的数据并载入到内存中
@@ -230,6 +263,7 @@ public:
         string input;
         cout << "\t\tA)Purchase" << TAB << "\t\t\tB)Sell" << endl;
         cout << "\t\tC)Modify" << TAB <<"\t\t\tD)Query"<<endl;
+        cout << "\t\tQ)Quit Please use quit to exit!"<<endl;
         printf("\t\t");
         cin >> input;
         if (input == "A")
@@ -240,12 +274,15 @@ public:
             modeC();
         else if (input == "D")
             modeD();
+        else if (input == "Q")
+            modeQ();
             
     }
 
     void saveData()//保存数据
     {
         ofstream os("../data/WareHouse.whm",ofstream::out);
+        if(!house.empty())
         for (Ware ware : house)
             os << ware.getName() << BLACK << ware.getCount() << BLACK << ware.getPrice() << BLACK << ware.getDate() << endl;
         os.close();
