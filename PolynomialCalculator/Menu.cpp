@@ -71,6 +71,8 @@ class Menu//Menu类只用于与用户进行交互，不负责具体计算的实现
             printf("加法运算\n");
         else if(mode==2)
             printf("减法运算\n");
+        else if(mode==3)
+            printf("乘法运算\n");
         for (int i = 0; i < 2; i++)//for循环读取两个多项式
         {
             printf("请输入第%s个多项式:",i==0?"一":"二");
@@ -97,6 +99,8 @@ class Menu//Menu类只用于与用户进行交互，不负责具体计算的实现
         ans=py[0]+py[1];
         else if (mode==2)
         ans=py[0]-py[1];
+        else if(mode==3)
+        ans=py[0]*py[1];
         data.addPoly(ans);
         printf("结果：ans=%s\n", ans.to_string().c_str());
         printf("输入任意键继续\n");
