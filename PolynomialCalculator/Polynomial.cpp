@@ -55,7 +55,7 @@ public:
             ss.clear();
             ss << temp[max_index-1];
             ss >> val;
-            if(val=="-1" || val=="1")
+            if((val=="-1" || val=="1") && temp[max_index]!=0)
                 val.pop_back();
             if (isHead)
             {
@@ -67,10 +67,10 @@ public:
             ss.clear();
             ss << temp[max_index];
             ss >> val;
-            if(temp[max_index]==1)
-            str_poly += val;
-            else if(temp[max_index]>1)
+           if(temp[max_index]>1)
             str_poly+="x^"+val;
+            else if(temp[max_index]==1)
+            str_poly+="x";
             temp.erase(temp.begin() + max_index);
             temp.erase(temp.begin() + max_index-1);
         }
