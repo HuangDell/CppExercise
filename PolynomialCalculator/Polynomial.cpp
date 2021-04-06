@@ -10,7 +10,9 @@ private:
     vector<double> poly;
     string name;
 public:
-    Polynomial(vector<double> ve,string n){
+
+    Polynomial(){}
+    Polynomial(vector<double> ve,string n){//根据特殊格式的vector容器来创建多项式 n是多项式的名称
         vector <double> dp(ve.size()/2,INT32_MIN);
         int index=0;
         bool find;
@@ -42,7 +44,7 @@ public:
         string str_poly;
         string val;
         bool isHead=true;
-        while (!temp.empty())
+        while (!temp.empty())//降序输出循环
         {
             int max_index = 1;
             for (int j = 1; j < temp.size(); j += 2)

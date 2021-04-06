@@ -22,6 +22,10 @@ int main(void)//main函数启动程序，实现交互。
             break;
             case 2:menu.Mode2();
             break;
+            case 3:menu.calculate(1);
+            break;
+            case 4:menu.calculate(2);
+            break;
             default:
             goto start;
         }
