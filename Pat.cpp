@@ -1,89 +1,64 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
+#include <sstream>
 using namespace std;
-class p{
+
+class ch{
     public:
-    int id;
-    string name;
-    int age;
-    p(){}
-    p(int id,string name,int age):id(id),name(name),age(age){}
+    int add;
+    int next;
+    ch(){}
+    ch(int a,int n=0):add(a),next(n){}
 };
-inline bool com(p t,p x,int col)
+void findNext(vector<ch> &head,const vector<ch>& temp,int n)
 {
-    if(col==1)
-        return t.id>x.id;
-    else if(col==2)
+    for (int i=0;i<temp.size();i++)
     {
-        if(t.name>x.name)
-            return true;
-        else if(t.name<x.name)
-            return false;
-        else return t.id>x.id;
+        if(temp[i].add==n)
+        {
+            head.push_back(temp[i]);
+            if (head.back().next != -1)
+                findNext(head, temp, head.back().next);
+            break;
+        }
     }
-    else if(col==3)
-    {
-        if(t.age>x.age)
-            return true;
-        else if(t.age<x.age)
-            return false;
-        else return t.id>x.id;
-    }
-    return true;
 }
 
-
-
-void sort(p*t,int size,int col)
-{
-    int i,j;
-    if(col==1)
-    {
-        for (i=1;i<size;i++)
-        {
-            auto temp=t[i];
-            for (j=i-1;j>=0 && com(t[j],temp,col);j--)
-                t[j+1]=t[j];
-            t[j+1]=temp;
-        }
-    }
-    else if(col==2)
-    {
-        for (i=1;i<size;i++)
-        {
-            auto temp=t[i];
-            for (j=i-1;j>=0 && com(t[j],temp,col);j--)
-                t[j+1]=t[j];
-            t[j+1]=temp;
-        }
-    }
-    else if(col==3)
-    {
-        for (i=1;i<size;i++)
-        {
-            auto temp=t[i];
-            for (j=i-1;j>=0 && com(t[j],temp,col);j--)
-                t[j+1]=t[j];
-            t[j+1]=temp;
-        }
-    }
-
-}
 int main(void)
 {
-    int count,col;
-    cin>> count>>col;
-    p t[count];
-    for(int i=0;i<count;i++)
+    int h1,h2,count;
+    char ws;
+    int isE=true;
+    cin>>h1>>h2>>count;
+    vector<ch> head1;
+    vector<ch> head2;
+    vector<ch> temp;
+    head1.push_back(ch(h1));
+    head2.push_back(ch(h2));
+    for (int i=0;i<count;i++)
     {
-        int id,age;
-        string name;
-        cin >>id>>name>>age;
-        t[i]=p(id,name,age);
+        cin >>h1>>ws>>h2;
+        if(h1==head1[0].add)
+            head1[0].next=h2;
+        if(h1==head2[0].add)
+            head2[0].next=h2;
+        temp.push_back(ch(h1,h2));
     }
-    sort(t,count,col);
-    for(int i=0;i<count;i++)
+    findNext(head1,temp,head1[0].next);
+    findNext(head2,temp,head2[0].next);
+    for(int i=0;i<head1.size();i++)
     {
-        printf("%06d %s %d\n",t[i].id,t[i].name.c_str(),t[i].age);
+        for (int j=0;j<head2.size();j++)
+        {
+            if(head1[i].add==head2[j].add && head1.size()-i==head2.size()-j)
+            {
+                printf("%d\n",head1[i].add);
+                return 0;
+            }
+        }
     }
+    printf("-1\n");
+    return 0;
 }
