@@ -1,243 +1,295 @@
-#ifndef SSCPP2014_STRING_H
-#define SSCPP2014_STRING_H
- 
-#include <iostream>
-#include <cstring>
- 
-class String {
-  private:
-    char *_buff;
-    int _length, _size;  // _size is of the allocated memory
- 
-  public:
-    // constructors
-    String();
-    explicit String(const char *src);
-    String(const String &src);
-    // destructor
-    ~String();
-    // member methods
-    void assign(const char *src);
-    void append(const char &other);
-    void clear();
-    int compare(const String &other) const;
-    const char* c_str() const;
-    bool empty() const;
-    int find(const String &other, int pos = 0) const;
-    int length() const;
-    String substr(const int &pos, const int &count) const;
-    // overload operators
-    char& operator[](const int &index);
-    void operator=(const String &other);
-    void operator=(const char *src);
-    String operator+(const String &other) const;
-    bool operator<(const String &other) const;
-    bool operator<=(const String &other) const;
-    bool operator>(const String &other) const;
-    bool operator>=(const String &other) const;
-    bool operator==(const String &other) const;
-    bool operator!=(const String &other) const;
-    // friend methods
-    friend std::ostream& operator<<(std::ostream& out, const String &str);
-    // non-meaning static property
-    static char _error_sign;  // initial as any char is okay
-};
-String::String() {_length=0;_size=0;_buff=NULL;}
-String::String(const char *src)
-{
-    auto len=strlen(src);
-    _buff=new char[len+1];
-    strcpy(_buff,src);
-    _buff[len]=0;
-    _size=len+1;
-    _length=len;
-}
-String::String(const String &src)
-{
-    clear();
-    _size=src._size;
-    _length=src._length;
-    _buff=new char[_size];
-    strcpy(_buff,src._buff);
-    _buff[_length]=0;
-}
-// destructor
-String::~String()
-{
-    delete _buff;
-}
-    // member methods
-void String::assign(const char *src)
-{
-    clear();
-    _length=strlen(src);
-    _size=_length+1;
-    _buff=new char[_size];
-    strcpy(_buff,src);
-    _buff[_length]=0;
-}
-void String::append(const char &other)
-{
-    if(_size<_length+2)
-    {
-        _size=_length+2;
-        auto temp=_buff;
-        _buff=new char[_size];
-        if(temp)
-        strcpy(_buff,temp);
-        delete temp;
-    }
-    _buff[_length++]=other;
-    _buff[_length]=0;
-}
-void String::clear()
-{
-    if(_buff)
-    delete _buff;
-    _buff=NULL;
-    _size=0;
-    _length=0;
-}
-int String::compare(const String &other) const
-{
-    auto an=strcmp(_buff,other._buff);
-    if(an>0)
-    return 1;
-    else if(an<0)
-    return -1;
-    else 
-    return 0;
-}
-const char *String::c_str() const
-{
-    return _buff;
-}
-bool String::empty() const
-{
-    return _length==0;
-}
-int String::find(const String &other, int pos ) const
-{
-    auto ch=other.c_str();
-
-    for(int i=pos;i<_length;i++)
-    {
-        if(_buff[i]==*ch)
-        {
-            bool is=true;
-            for (int j=1,m=i+1;j<other._length;j++,m++)
-            {
-                if(_buff[m]!=ch[j])
-                {
-                    is=false;
-                    break;
+#ifndef BITSET_H
+#define BITSET_H
+#include<iostream>
+#include<cstring>
+#define N 5
+const int max_length = 32 * N;
+class bitset {
+    private:
+        int a[N];
+    public:
+        bitset();
+        void set(int pos);
+        void reset(int pos);
+        int count() const;
+        bool test(int pos) const;
+        bool any() const;
+        bool none() const;
+        bool all() const;
+        bitset& operator&= (const bitset& b);
+        bitset& operator|= (const bitset& b);
+        bitset& operator^= (const bitset& b);
+        bitset& operator= (const bitset& b);
+        bitset& operator <<= (int pos);
+        bitset& operator >>= (int pos);
+        bitset operator~() const;
+        bitset operator&(const bitset& b) const;
+        bitset operator|(const bitset& b) const;
+        bitset operator^(const bitset& b) const;
+        bitset operator<<(int pos) const;
+        bitset operator>>(int pos) const;
+        bool operator== (const bitset& b) const;
+        bool operator!= (const bitset& b) const;
+        bool operator[] (int pos) const;
+        friend std::ostream& operator << (std::ostream& os, const bitset& s) {
+            for (int i = N-1; i >= 0; i--) {
+                for (int j = 31; j >= 0; j--) {
+                    if (s.a[i] & (1 << j)) os << 1;
+                    else os << 0;
                 }
             }
-            if(is)
-            return i;
+            return os;
         }
+};
+bitset::bitset()
+{
+	memset(a,0,sizeof(int)*N);
+
+}
+void bitset::set(int pos)
+{
+	int i=pos/32;
+	a[i]=a[i] | (1<<(pos%32));
+}
+void bitset::reset(int pos)
+{
+	int i=pos/32;
+    a[i]=~a[i];
+    set(pos);
+    a[i]=~a[i];
+}
+int bitset::count() const
+{
+	int count=0;
+	for (int i=0;i<N;i++)
+	{
+		for (int j=31;j>=0;j--)
+		{
+			if((((a[i]<<(31-j))>>31)+2)==1)
+			count++;
+		}
+	}
+	return count;
+}
+bool bitset::test(int pos) const
+{
+	int i=pos/32;
+	return (pos &(1<< pos%32))==1;
+}
+bool bitset::any() const
+{
+    for (int i=0;i<N;i++)
+    {
+        if(a[i]>0)
+        return true;
     }
-    return _length;
-}
-int String::length() const { return _length; }
-String String::substr(const int &pos, const int &count) const 
-{
-    char temp[_length];
-    strncpy(temp,_buff+pos,count);
-    temp[count]=0;
-    return String(temp);
-}
-// overload operators
-char &String::operator[](const int &index)
-{
-    return _buff[index];
-}
-void String::operator=(const String &other)
-{
-    clear();
-    _size=other._size;
-    _length=other._length;
-    delete []_buff;
-    _buff=new char[_size];
-    strcpy(_buff,other._buff);
-    _buff[_length]=0;
-}
-void String::operator=(const char *src)
-{
-    _size=strlen(src)+1;
-    _length=_size-1;
-    _buff=new char[_size];
-    strcpy(_buff,src);
-    _buff[_length]=0;
-}
-String String::operator+(const String &other) const
-{
-    auto size=_size+other._size;
-    auto len=_length+other._length;
-    char temp[size];
-    memset(temp,0,sizeof(char)*size);
-    strcat(temp,_buff);
-    strcat(temp,other._buff);
-    return String(temp);
-}
-bool String::operator<(const String &other) const
-{
-    auto re=strcmp(_buff,other._buff);
-    if(re==0 || re>0)
     return false;
-    else
+}
+bool bitset::none() const
+{
+    for(int i=0;i<N;i++)
+    if(a[i]!=0)
+    return false;
     return true;
 }
-bool String::operator<=(const String &other) const
+bool bitset::all() const
 {
-    auto re=strcmp(_buff,other._buff);
-    if(re>0)
-    return false;
-    else
+    for (int i = 0; i < N; i++)
+        if ((~a[i]) != 0)
+            return false;
     return true;
+}
+bitset &bitset::operator&=(const bitset &b)
+{
+    for(int i=0;i<N;i++)
+    a[i]&=b.a[i];
+    return *this;
+}
+bitset &bitset::operator|=(const bitset &b)
+{
+    for(int i=0;i<N;i++)
+    a[i]|=b.a[i];
+    return *this;
+}
+bitset &bitset::operator^=(const bitset &b)
+{
+    for(int i=0;i<N;i++)
+    a[i]^=b.a[i];
+    return *this;
+}
+bitset &bitset::operator=(const bitset &b)
+{
+    for(int i=0;i<N;i++)
+        a[i]=b.a[i];
+    return *this;
+}
+bitset &bitset::operator<<=(int pos)
+{
+    for (int i = N-1; i >= 0; i -= 2)
+    {
+        auto temp=a[i];
+        a[i]<<=pos;
+        auto car=temp>>(32-pos);
+        a[i-1]<<=pos;
+        a[i-1]|=car;
+    }
+    return *this;
+}
+bitset &bitset::operator>>=(int pos)
+{
+    for(int i=0;i<N;i+=2)
+    {
+        auto temp=a[i];
+        a[i]>>=pos;
+        auto car=temp<<(32-pos);
+        a[i+1]>>=pos;
+        a[i+1]|=car;
+    }
+    return *this;
+}
+bitset bitset::operator~() const
+{
+    auto temp=*this;
+    for (int i=0;i<N;i++)
+    temp.a[i]=~temp.a[i];
+    return temp;
+}
+bitset bitset::operator&(const bitset &b) const
+{
+    auto temp=*this;
+    for (int i=0;i<N;i++)
+        temp.a[i]&=b.a[i];
+    return temp;
+}
+bitset bitset::operator|(const bitset &b) const
+{
+    auto temp=*this;
+    for (int i=0;i<N;i++)
+        temp.a[i]|=b.a[i];
+    return temp;
+}
+bitset bitset::operator^(const bitset &b) const
+{
+    auto temp=*this;
+    for (int i=0;i<N;i++)
+        temp.a[i]^=b.a[i];
+    return temp;
+}
+bitset bitset::operator<<(int pos) const
+{
+    auto an=*this;
+    for (int i = N; i >= 0; i -= 2)
+    {
+        auto temp=a[i];
+        an.a[i]<<=pos;
+        auto car=temp>>(32-pos);
+        an.a[i-1]<<=pos;
+        an.a[i-1]|=car;
+    }
+    return an;
 
 }
-bool String::operator>(const String &other) const
+bitset bitset::operator>>(int pos) const
 {
-    auto re=strcmp(_buff,other._buff);
-    if(re<0 || re==0)
-    return false;
-    else
-    return true;
+    auto an=*this;
+    for(int i=0;i<N;i+=2)
+    {
+        auto temp=a[i];
+        an.a[i]>>=pos;
+        auto car=temp<<(32-pos);
+        an.a[i+1]>>=pos;
+        an.a[i+1]|=car;
+    }
+    return an;
 
 }
-
-bool String::operator>=(const String &other) const
+bool bitset::operator==(const bitset &b) const
 {
-    auto re=strcmp(_buff,other._buff);
-    if(re<0)
-    return false;
-    else
-    return true;
-
-}
-bool String::operator==(const String &other) const
-{
-    auto re=strcmp(_buff,other._buff);
-    if(re!=0)
-    return false;
-    else
-    return true;
-
-}
-bool String::operator!=(const String &other) const
-{
-    auto re=strcmp(_buff,other._buff);
-    if(re==0)
-    return false;
-    else
+    for(int i=0;i<N;i++)
+    {
+        if(a[i]!=b[i])
+        return false;
+    }
     return true;
 }
-// friend methods
-std::ostream &operator<<(std::ostream &out, const String &str)
+bool bitset::operator!=(const bitset &b) const
 {
-    if(str._buff)
-    out<<str.c_str();
-    return out;
+    return !(*this==b);
+}
+bool bitset::operator[](int pos) const
+{
+    return test(pos)?1:0;
+
 }
 #endif
+#include<iostream>
+using namespace std;
+int main() {
+    bitset a, b;
+    int n, m, q;
+    cin >> n >> m >> q;
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        a.set(x);
+    }
+    cout << "a.count() is " << a.count() << "\n";
+    cout << "a.test(5) is " << (a.test(5) ? "true" : "false") << "\n";
+    cout << "a.any() is " << (a.any() ? "true" : "false") << "\n";
+    cout << "a.none() is " << (a.none() ? "true" : "false") << "\n";
+    cout << "a.all() is " << (a.all() ? "true" : "false") << "\n";
+    b = ~b;
+    for (int i = 0; i < m; i++) {
+        int x;
+        cin >> x;
+        b.reset(x);
+    }
+    cout << a << "\n";
+    cout << b << "\n";
+    if (a == b) {
+        cout << "hello\n";
+    }
+    if (a != b) {
+        cout << "world\n";
+    }
+    bitset c;
+    // test &
+    c = a;
+    c &= b;
+    cout << c << "\n";
+    c = a & b;
+    cout << c << "\n";
+    // test |
+    c = a;
+    c |= b;
+    cout << c << "\n";
+    c = a | b;
+    cout << c << "\n";
+    // test ^
+    c = a;
+    c ^= b;
+    cout << c << "\n";
+    c = a ^ b;
+    cout << c << "\n";
+    // test <<
+    c = a;
+    c <<= 2;
+    cout << c << "\n";
+    c = a << 2;
+    cout << c << "\n";
+    // test >>
+    c = b;
+    c >>= 2;
+    cout << c << "\n";
+    c = b >> 2;
+    cout << c << "\n";
+    // test []
+    for (int i = 0; i < q; i++) {
+        int x;
+        cin >> x;
+        if (a[i])
+            cout << "Yes\n";
+        else
+            cout << "No\n";
+    }
+}
