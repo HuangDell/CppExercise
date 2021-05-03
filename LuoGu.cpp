@@ -1,25 +1,50 @@
 #include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<cstring>
+#include<vector>
 using namespace std;
-struct node{
-	int l,r;
-}a[1001000];//记录每个节点的左右节点
-int Max=-1,n;
-void dfs(int root,int step){
-	if(root==0) return;//如果该节点为0（即上它的爸爸没有这个儿子），返回
-	Max=max(Max,step);//记录最大值
-	dfs(a[root].l,step+1);//搜索它的左儿子
-	dfs(a[root].r,step+1);//搜索它的右儿子
+bool *pick;
+bool isPrimer(int num)
+{
+	for(int i=2;i*i<=num;i++)
+		if(num%i==0)
+		return false;
+	return true;
 }
-int main(){
-	cin>>n;//输入n
-	for(int i=1;i<=n;i++){
-		cin>>a[i].l>>a[i].r;//输入该节点的左节点和右节点
+int sum=0,an=0;
+void funct(int n,int k,vector<int>& num,int head=0)
+{
+	if (k == 0)
+	{
+		if(isPrimer(sum))
+		an++;
+		return ;
 	}
-	dfs(1,1);//从1号节点，深度为1开始搜索 
-	cout<<Max;//输出最大值
-	return 0;
+	for(int i=head;i<n;i++)
+	{
+		if(!pick[i] && n-i>=k)
+		{
+			sum += num[i];
+			pick[i] = true;
+			funct(n, k - 1, num,i+1);
+			pick[i] = false;
+			sum-=num[i];
+		}
+	}
+}
+
+int main(void)
+{
+	int n,k;
+	int temp;
+	cin>>n>>k;
+	vector<int> num;
+	pick=new bool[n];
+	for(int i=0;i<n;i++)
+	pick[i]=false;
+	for(int i=0;i<n;i++)
+	{
+		cin>>temp;
+		num.push_back(temp);
+	}
+	funct(n,k,num);
+	printf("%d",an);
 }
