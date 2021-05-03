@@ -1,50 +1,28 @@
 #include<iostream>
 #include<vector>
 using namespace std;
-bool *pick;
-bool isPrimer(int num)
+typedef long long int ll;
+ll dp[30][30][30]={0};
+ll w(ll a,ll b,ll c)
 {
-	for(int i=2;i*i<=num;i++)
-		if(num%i==0)
-		return false;
-	return true;
+	if(a<=0 || b<=0 || c<=0)
+		return 1;
+	else if(a>=20 || b>=20 || c>=20)
+		return w(20,20,20);
+		
+	else if(a<b && b<c)
+		return w(a,b,c-1)+w(a,b-1,c-1)+w(a,b-1,c);
+	else 
+		return w(a-1,b,c)+w(a-1,b-1,c)+w(a-1,b,c-1)-w(a-1,b-1,c-1);
 }
-int sum=0,an=0;
-void funct(int n,int k,vector<int>& num,int head=0)
+int main()
 {
-	if (k == 0)
+	ll a,b,c;
+	while(true)
 	{
-		if(isPrimer(sum))
-		an++;
-		return ;
+		cin>>a>>b>>c;
+		if(a==-1 &&b==-1 && c==-1)
+		break;
+		printf("w(%lld, %lld, %lld) = %lld\n",a,b,c,w(a,b,c));
 	}
-	for(int i=head;i<n;i++)
-	{
-		if(!pick[i] && n-i>=k)
-		{
-			sum += num[i];
-			pick[i] = true;
-			funct(n, k - 1, num,i+1);
-			pick[i] = false;
-			sum-=num[i];
-		}
-	}
-}
-
-int main(void)
-{
-	int n,k;
-	int temp;
-	cin>>n>>k;
-	vector<int> num;
-	pick=new bool[n];
-	for(int i=0;i<n;i++)
-	pick[i]=false;
-	for(int i=0;i<n;i++)
-	{
-		cin>>temp;
-		num.push_back(temp);
-	}
-	funct(n,k,num);
-	printf("%d",an);
 }
