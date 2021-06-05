@@ -1,407 +1,104 @@
 #include <iostream>
-#include <string>
-#include <cctype>
-#include <vector>
+#include <sstream>
+
 using namespace std;
-template <typename T>
-class Matrix
+#include <vector>
+#include <utility>
+template<typename T,typename K>
+struct Hpair{
+	T first;
+	K second;
+};
+template<typename T,typename K>
+Hpair<T,K> make_Hpair(T t,K k)
 {
-private:
-	int rows;
-	int columns;
-	T *data;
+	Hpair<T,K> p;
+	p.first=t;
+	p.second=k;
+	return p;
+}
 
-	void _init(const int &rows, const int &columns, const vector<double> &values)
-	{
-		this->rows = rows;
-		this->columns = columns;
-		this->data = new T[rows * columns];
-		for (int i = 0; i < rows * columns; ++i)
-		{
-			if (values.empty())
-			{
-				this->data[i] = 0;
-				continue;
-			}
-			this->data[i] = values[i];
-		}
-	}
-	void _init(const int &rows, const int &columns, const T *values)
-	{
-		this->rows = rows;
-		this->columns = columns;
-		this->data = new T[rows * columns];
-		for (int i = 0; i < rows * columns; ++i)
-		{
-			if (values == NULL)
-			{
-				this->data[i] = 0;
-				continue;
-			}
-			this->data[i] = values[i];
-		}
-	}
 
-	int _index(int row, int column)
-	{
-		return (row - 1) * this->columns + (column - 1);
-	}
-
+class HashCode{
 public:
-	Matrix(int rows, int columns)
+	size_t hashval;
+	string ch;
+	operator int()
 	{
-		this->_init(rows, columns, NULL);
+		return hashval;
+	}
+	operator string()
+	{
+		return ch;
 	}
 
-	Matrix(int rows, int columns, const vector<double> &values)
+	static HashCode getHash(string & st) 
 	{
-		this->_init(rows, columns, values);
+ 		HashCode hc;
+		hc.ch=st;
+		size_t hashVal=0LL;
+		for(auto &ch:st)
+			hashVal=37*hashVal+ch;
+		hc.hashval=hashVal+INT_MAX;
+		return hc; 
 	}
-
-	Matrix(const Matrix &matrix)
+	static HashCode getHash(int  num) 
 	{
-		this->_init(matrix.rows, matrix.columns, matrix.data);
-	}
-
-	~Matrix()
-	{
-		delete[] this->data;
-	}
-
-	Matrix &operator=(const Matrix &matrix)
-	{
-		delete[] this->data;
-		this->_init(matrix.rows, matrix.columns, matrix.data);
-		return *this;
-	}
-
-	Matrix getRow(int row)
-	{
-		Matrix temp1(1, this->columns);
-		for (int i = 0; i < this->columns; ++i)
-			temp1.data[i] = this->data[(row - 1) * this->columns + i];
-		return temp1;
-	}
-
-	Matrix getColumn(int col)
-	{
-		Matrix temp2(this->rows, 1);
-		for (int i = 0; i < this->rows; ++i)
-			temp2.data[i] = this->data[i * this->columns + col - 1];
-		return temp2;
-	}
-
-	Matrix concatenateRows(Matrix m2)
-	{
-		Matrix m3(this->rows + m2.rows, this->columns);
-		for (int i = 0; i < m3.rows * m3.columns; ++i)
-		{
-			if (i < this->rows * this->columns)
-				m3.data[i] = this->data[i];
-			else
-				m3.data[i] = m2.data[i - this->rows * this->columns];
-		}
-		return m3;
-	}
-
-	Matrix concatenateColumns(Matrix m2)
-	{
-		Matrix m3(this->rows, this->columns + m2.columns);
-		for (int i = 0; i < m3.rows; ++i)
-		{
-			for (int j = 0; j < m3.columns; ++j)
-			{
-				if (j < this->columns)
-					m3.data[i * m3.columns + j] = this->data[i * columns + j];
-				else
-					m3.data[i * m3.columns + j] = m2.data[i * columns + j - this->columns];
-			}
-		}
-		return m3;
-	}
-
-	Matrix reshape(int rows, int columns)
-	{
-		Matrix m2(rows, columns);
-		int p = 0;
-		int q = 0;
-		for (int i = 0; i < columns; ++i)
-		{
-			for (int j = 0; j < rows; ++j)
-			{
-				m2.data[i + j * columns] = this->data[p + q * this->columns];
-				q++;
-				if (q >= this->rows)
-				{
-					q = 0;
-					p++;
-				}
-			}
-		}
-		return m2;
-	}
-
-	Matrix transpose()
-	{
-		Matrix m2(this->columns, this->rows);
-		int p = 0;
-		for (int i = 0; i < m2.columns; ++i)
-		{
-			for (int j = 0; j < m2.rows; ++j)
-			{
-				m2.data[i + j * m2.columns] = this->data[p];
-				p++;
-			}
-		}
-		return m2;
-	}
-
-	Matrix max()
-	{
-		if (this->rows > 1)
-		{
-			Matrix m2(1, this->columns);
-			for (int i = 0; i < this->columns; ++i)
-			{
-				m2.data[i] = this->data[i];
-				for (int j = 0; j < this->rows; ++j)
-				{
-					if (m2.data[i] < this->data[i + j * this->columns])
-						m2.data[i] = this->data[i + j * this->columns];
-				}
-			}
-			return m2;
-		}
-		else
-		{
-			Matrix m2(1, 1);
-			m2.data[0] = this->data[0];
-			for (int i = 0; i < this->columns; ++i)
-			{
-				if (m2.data[0] < this->data[i])
-					m2.data[0] = this->data[i];
-			}
-			return m2;
-		}
-	}
-
-	Matrix min()
-	{
-		if (this->rows > 1)
-		{
-			Matrix m2(1, this->columns);
-			for (int i = 0; i < this->columns; ++i)
-			{
-				m2.data[i] = this->data[i];
-				for (int j = 0; j < this->rows; ++j)
-				{
-					if (m2.data[i] > this->data[i + j * this->columns])
-						m2.data[i] = this->data[i + j * this->columns];
-				}
-			}
-			return m2;
-		}
-		else
-		{
-			Matrix m2(1, 1);
-			m2.data[0] = this->data[0];
-			for (int i = 0; i < this->columns; ++i)
-			{
-				if (m2.data[0] > this->data[i])
-					m2.data[0] = this->data[i];
-			}
-			return m2;
-		}
-	}
-
-	Matrix sum()
-	{
-		if (this->rows > 1)
-		{
-			Matrix m2(1, this->columns);
-			for (int i = 0; i < this->columns; ++i)
-			{
-				for (int j = 0; j < this->rows; ++j)
-					m2.data[i] += this->data[i + j * this->columns];
-			}
-			return m2;
-		}
-		else
-		{
-			Matrix m2(1, 1);
-			for (int i = 0; i < this->columns; ++i)
-				m2.data[0] += this->data[i];
-			return m2;
-		}
-	}
-	Matrix operator+(const Matrix &m2)
-	{
-		Matrix m3(this->rows, this->columns);
-		for (int i = 0; i < this->rows * this->columns; ++i)
-		{
-			m3.data[i] = m2.data[i] + this->data[i];
-		}
-		return m3;
-	}
-
-	Matrix operator-(const Matrix &m2)
-	{
-		Matrix m3(this->rows, this->columns);
-		for (int i = 0; i < this->rows * this->columns; ++i)
-		{
-			m3.data[i] = this->data[i] - m2.data[i];
-		}
-		return m3;
-	}
-
-	Matrix operator+(const double val)
-	{
-		Matrix m3(this->rows, this->columns);
-		for (int i = 0; i < this->rows * this->columns; ++i)
-		{
-			m3.data[i] = this->data[i] + val;
-		}
-		return m3;
-	}
-
-	Matrix operator-(const double val)
-	{
-		Matrix m3(this->rows, this->columns);
-		for (int i = 0; i < this->rows * this->columns; ++i)
-		{
-			m3.data[i] = this->data[i] - val;
-		}
-		return m3;
-	}
-
-	Matrix operator*(const Matrix &m2) const
-	{
-		Matrix m3(this->rows, m2.columns);
-		for (int i = 0; i < m3.rows; ++i)
-		{
-			for (int j = 0; j < m3.columns; ++j)
-			{
-				for (int k = 0; k < this->columns; ++k)
-					m3.data[i * m3.columns + j] += this->data[i * this->columns + k] * m2.data[j + k * m2.columns];
-			}
-		}
-		return m3;
-	}
-
-	Matrix operator*(const double val) const
-	{
-		Matrix m3(this->rows, this->columns);
-		for (int i = 0; i < this->rows * this->columns; ++i)
-		{
-			m3.data[i] = this->data[i] * val;
-		}
-		return m3;
-	}
-
-	void print()
-	{
-		for (int i = 0; i < this->rows; ++i)
-		{
-			for (int j = 0; j < this->columns; ++j)
-			{
-				cout << "    " << this->get(i + 1, j + 1);
-			}
-			cout << endl;
-		}
-	}
-
-	T &get(int row, int column)
-	{
-		return this->data[this->_index(row, column)];
+		HashCode hc;
+		hc.hashval=num;
+		return hc;
 	}
 };
-
-template <class T>
-void print(vector<T> &vec, ostream &out = cout)
-{
-	for (int i = 0; i < vec.size(); ++i)
+class HT{
+	vector<Hpair<HashCode,HashCode>> tables;
+	public:
+	template<typename K,typename V>
+	void put(K key,V val)
 	{
-		cout << vec[i] << " ";
-	}
-	cout << endl;
-}
-
-template <class T>
-ostream &operator<<(ostream &out, const vector<T> &vec)
-{
-	print(vec, out);
-	return out;
-}
-
-int main()
-{
-	cout << "constructor 1" << endl;
-	Matrix<double> matrix1(3, 3);
-	matrix1.print();
-
-	const double values1[] = {
-		1,
-		2,
-		3,
-		4,
-		5,
-		6,
-		7,
-		8,
-		9,
-	};
-	vector<double> values2;
-	for (int i = 0; i < 9; ++i)
-	{
-		values2.push_back(values1[i]);
+		tables.push_back(make_Hpair(HashCode::getHash(key),HashCode::getHash(val)));
 	}
 
-	cout << "constructor 2" << endl;
-	Matrix<double> matrix2(3, 3, values2);
-	matrix2.print();
+	template <typename T>
+	HashCode operator[](T k)
+	{
+		HashCode key=HashCode::getHash(k);
+		for(auto &temp:tables)
+		{
+			if(temp.first.hashval==key.hashval)
+			return temp.second;
+		}
+		return HashCode::getHash(0);
+	}
+	
+	int size(){return tables.size();}
+};
 
-	cout << "copy constructor" << endl;
-	Matrix<double> matrix3 = matrix2;
-	matrix3.print();
-
-	cout << "operator =" << endl;
-	matrix3.get(1, 1) = 10.0;
-	matrix3 = matrix2;
-	matrix3.print();
-
-	cout << "getColumn" << endl;
-	matrix2.getColumn(2).print();
-	cout << "getRow" << endl;
-	matrix2.getRow(2).print();
-
-	cout << "concatenateRows" << endl;
-	matrix1.concatenateRows(matrix2).print();
-	cout << "concatenateColumns" << endl;
-	matrix1.concatenateColumns(matrix2).print();
-
-	cout << "reshape" << endl;
-	matrix1.concatenateColumns(matrix2).reshape(6, 3).print();
-
-	cout << "transpose" << endl;
-	matrix2.transpose().print();
-	cout << "operator +" << endl;
-	(matrix2 + matrix2).print();
-	cout << "operator +" << endl;
-	(matrix2 + 10).print();
-	cout << "operator -" << endl;
-	(matrix2.transpose() - matrix2).print();
-	cout << "operator -" << endl;
-	(matrix2 - 10).print();
-
-	cout << "operator *" << endl;
-	(matrix2.transpose() * matrix2).print();
-	cout << "operator *" << endl;
-	(matrix2 * 2).print();
-
-	cout << "max" << endl;
-	cout << matrix2.max().max().get(1, 1) << endl;
-	cout << "min" << endl;
-	cout << matrix2.min().min().get(1, 1) << endl;
-	cout << "sum" << endl;
-	cout << matrix2.sum().sum().get(1, 1) << endl;
+int main() {
+	HT map;
+	
+	int key1;
+	int value1;
+	cin >> key1 >> value1;
+	map.put(key1, value1);
+	
+	string key2;
+	string value2;
+	cin >> key2 >> value2;
+	map.put(key2, value2);
+	
+	int key3;
+	string value3;
+	cin >> key3 >> value3;
+	map.put(key3, value3);
+	
+	string key4;
+	int value4;
+	cin >> key4 >> value4;
+	map.put(key4, value4);
+	
+	cout << map.size() << endl;
+	cout << (int)map[key1] << endl;
+	cout << (string)map[key2] << endl;
+	cout << (string)map[key3] << endl;
+	cout << (int)map[key4] << endl;
 }
