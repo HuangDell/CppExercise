@@ -1,7 +1,7 @@
 /************************************************* 
 Copyright:HuangDell 
 Author: HuangDell
-Date:2021/3/19
+Date: 2021/6/15
 Description:Simple ware house control 
 **************************************************/   
 #include "Header.h"
